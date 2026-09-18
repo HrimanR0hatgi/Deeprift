@@ -126,33 +126,34 @@ def get_nearby_services(latitude, longitude, radius):
 # Test the function
 # -----------------------------
 
-result = get_nearby_services(
-    28.6139,
-    77.2090,
-    2
-)
+if __name__ == "__main__":
 
+    result = get_nearby_services(
+        28.6139,
+        77.2090,
+        2
+    )
 
-# -----------------------------
-# Display results
-# -----------------------------
+    # -----------------------------
+    # Display results
+    # -----------------------------
 
-if result is not None:
+    if result is not None:
 
-    print("\nLOCATION:")
-    print(result["location"])
+        print("\nLOCATION:")
+        print(result["location"])
 
-    print("\nRADIUS:")
-    print(result["radius_km"], "km")
+        print("\nRADIUS:")
+        print(result["radius_km"], "km")
 
-    print("\nHOSPITALS:")
-    for hospital in result["hospitals"]:
-        print(hospital)
+        print("\nHOSPITALS:")
+        for hospital in result["hospitals"]:
+            print(hospital)
 
-    print("\nFIRE STATIONS:")
-    for station in result["fire_stations"]:
-        print(station)
+        print("\nFIRE STATIONS:")
+        for station in result["fire_stations"]:
+            print(station)
 
-    print("\nPOLICE STATIONS:")
-    for station in result["police_stations"]:
-        print(station)
+        print("\nPOLICE STATIONS:")
+        for station in result["police_stations"]:
+            print(station)
