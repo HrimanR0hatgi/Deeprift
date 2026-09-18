@@ -1,133 +1,140 @@
-import PopulationStats from "./components/PopulationStats";
 import { useState } from "react";
+
 import {
   MapContainer,
   TileLayer,
   useMapEvents,
-  Circle,
   Polyline,
+  Circle,
   Marker,
-  Popup,
 } from "react-leaflet";
+
 import "leaflet/dist/leaflet.css";
 
-import Sidebar from "./components/sidebar";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import SimulationControls from "./components/sim";
-import MapFilters from "./components/MapFilters";
 
 
-function LocationSelector() {
+function LocationSelector({ setLocation }) {
   useMapEvents({
     click(event) {
-      console.log("Latitude:", event.latlng.lat);
-      console.log("Longitude:", event.latlng.lng);
+      const latitude = event.latlng.lat;
+      const longitude = event.latlng.lng;
+
+      console.log("Latitude:", latitude);
+      console.log("Longitude:", longitude);
+
+      setLocation({
+        latitude: latitude,
+        longitude: longitude,
+      });
     },
   });
 
   return null;
 }
 
+
 function App() {
-  const [mapView, setMapView] = useState("Impact Zones");
-  const [disaster, setDisaster] = useState("Earthquake");
-  const [intensity, setIntensity] = useState(5);
+
+  const [location, setLocation] = useState(null);
+
+  const [simulationResult, setSimulationResult] = useState(null);
+
+
   return (
-    <div className="app-layout">
-      <Sidebar />
+    <div>
 
-      <main className="main-content">
-        <Navbar />
+      <Navbar />
 
-        <Hero />
+      <Hero />
 
-        <SimulationControls
-  disaster={disaster}
-  setDisaster={setDisaster}
-  intensity={intensity}
-  setIntensity={setIntensity}
-/>
-        <PopulationStats />
-        
+      <SimulationControls
+        location={location}
+        setSimulationResult={setSimulationResult}
+      />
 
-        <section id="map">
-          <h2>Disaster Map</h2>
-          <MapFilters
-          mapView={mapView}
-          setMapView={setMapView}
+
+      <section id="map">
+
+        <h2>Disaster Map</h2>
+
+        <MapContainer
+          center={[12.879, 79.134]}
+          zoom={13}
+          style={{
+            height: "500px",
+            width: "100%",
+          }}
+        >
+
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <div className="map-info">
-          {mapView === "Impact Zones" && (
-          <p>Showing disaster impact zones.</p>
-          )}
 
-          {mapView === "Traffic Congestion" && (
-          <p>Showing traffic congestion information.</p>
-          )}
 
-          {mapView === "Evacuation Routes" && (
-          <p>Showing evacuation routes.</p>
-          )}
+          <LocationSelector
+            setLocation={setLocation}
+          />
 
-          {mapView === "Construction Sites" && (
-          <p>Showing construction sites.</p>
-          )}
 
-          {mapView === "Emergency Services" && (
-          <p>Showing nearby emergency services.</p>
-          )}    
-          </div>
+          {/* Selected location marker */}
 
-          <MapContainer
-            center={[12.879, 79.134]}
-            zoom={13}
-            style={{ height: "500px", width: "100%" }}
-          >
-            <TileLayer
-              attribution="&copy; OpenStreetMap contributors"
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          {location && (
+            <Marker
+              position={[
+                location.latitude,
+                location.longitude,
+              ]}
             />
+          )}
 
-            <LocationSelector />
 
-{mapView === "Impact Zones" && (
-  <>
-    <Circle
-      center={[12.879, 79.134]}
-      radius={800}
-      pathOptions={{ color: "red", fillColor: "red" }}
-    />
+          {/* Disaster impact radius */}
 
-    <Circle
-      center={[12.89, 79.14]}
-      radius={500}
-      pathOptions={{ color: "orange", fillColor: "orange" }}
-    />
-  </>
-)}
+          {location &&
+            simulationResult?.affected_radius_km && (
+              <Circle
+                center={[
+                  location.latitude,
+                  location.longitude,
+                ]}
+                radius={
+                  simulationResult.affected_radius_km * 1000
+                }
+              />
+            )}
 
-{mapView === "Evacuation Routes" && (
-  <Polyline
-    positions={[
-      [12.875, 79.13],
-      [12.88, 79.14],
-      [12.89, 79.15],
-    ]}
-    pathOptions={{ color: "green", weight: 6 }}
-  />
-)}
 
-{mapView === "Emergency Services" && (
-  <Marker position={[12.879, 79.134]}>
-    <Popup>Emergency Shelter</Popup>
-  </Marker>
-)}
-          </MapContainer>
-        </section>
-      </main>
+          {/* Roads */}
+
+          {simulationResult?.roads?.map(
+            (road, index) => {
+
+              const positions =
+                road.geometry.map((point) => [
+                  point.lat,
+                  point.lon,
+                ]);
+
+              return (
+                <Polyline
+                  key={index}
+                  positions={positions}
+                />
+              );
+            }
+          )}
+
+        </MapContainer>
+
+      </section>
+
     </div>
   );
 }
+
 
 export default App;
