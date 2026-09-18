@@ -1,28 +1,35 @@
 function Hero() {
   return (
     <section className="hero" id="home">
-      <p className="tagline">DISASTER SIMULATION PLATFORM</p>
+      <div className="hero-content">
+        <p className="hero-tagline">DISASTER SIMULATION PLATFORM</p>
 
-      <h2>
-        Understand disasters.
-        <br />
-        Prepare for tomorrow.
-      </h2>
+        <h2>
+          Understand disasters.
+          <br />
+          Prepare for tomorrow.
+        </h2>
 
-      <p>
-        Explore disaster scenarios, analyze their impact,
-        and discover emergency response options.
-      </p>
+        <p className="hero-description">
+          Explore disaster scenarios, analyze their impact,
+          and discover emergency response options.
+        </p>
 
-      <button
-        onClick={() => {
-          document
-            .getElementById("simulation")
-            .scrollIntoView({ behavior: "smooth" });
-        }}
-      >
-        Start Simulation
-      </button>
+        <button
+          className="hero-button"
+          onClick={() => {
+            document
+              .getElementById("simulation")
+              .scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          Start Simulation →
+        </button>
+      </div>
+
+      <div className="hero-icon">
+        🌍
+      </div>
     </section>
   );
 }

@@ -1,13 +1,14 @@
 function Navbar() {
   return (
     <header className="navbar">
-      <h1>DeepRift</h1>
+      <div>
+        <p className="navbar-subtitle">DISASTER MANAGEMENT</p>
+        <h1>Dashboard</h1>
+      </div>
 
-      <nav>
-        <a href="#home">Home</a>
-        <a href="#simulation">Simulation</a>
-        <a href="#about">About</a>
-      </nav>
+      <div className="navbar-right">
+        <span>🛡️ Preparedness Mode</span>
+      </div>
     </header>
   );
 }

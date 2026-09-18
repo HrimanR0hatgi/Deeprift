@@ -1,9 +1,7 @@
-import { useState } from "react";
 
-function SimulationControls() {
-  const [disaster, setDisaster] = useState("Earthquake");
-  const [intensity, setIntensity] = useState(5);
 
+function SimulationControls({ disaster, setDisaster, intensity, setIntensity }) {
+  
   return (
     <section className="simulation" id="simulation">
       <h2>Simulation Controls</h2>
